@@ -20,7 +20,7 @@ public class LaunchActivity extends Activity {
         setContentView(R.layout.launch);
         Handler x = new Handler();//定义一个handle对象
 
-        x.postDelayed(new splashhandler(), 2500);//设置3秒钟延迟执行splashhandler线程。其实你这里可以再新建一个线程去执行初始化工作，如判断SD,网络状态等
+        x.postDelayed(new splashhandler(), 1500);//设置3秒钟延迟执行splashhandler线程。其实你这里可以再新建一个线程去执行初始化工作，如判断SD,网络状态等
     }
 
     class splashhandler implements Runnable{

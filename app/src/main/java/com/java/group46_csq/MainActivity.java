@@ -1,5 +1,6 @@
 package com.java.group46_csq;
 
+import android.app.ActionBar;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -10,7 +11,9 @@ import android.view.*;
 import android.widget.ListView;
 import android.content.Intent;
 import android.widget.Toast;
-import android.app.ActionBar;
+import android.app.Activity;
+import android.graphics.drawable.Drawable;
+
 
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
@@ -19,7 +22,7 @@ import com.java.group46_csq.util.NewsList;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnLastItemVisibleListener;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 
-public class MainActivity extends ListActivity {
+public class MainActivity extends Activity {
     NewsList listItems;
     private PullToRefreshListView mPullRefreshListView;
     private NewsAdapter mAdapter;
@@ -66,6 +69,28 @@ public class MainActivity extends ListActivity {
 
         new GetMoreData().execute();
 
+
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+        //取得ActionBar
+        ActionBar actionBar = getActionBar();
+        //设置不显示标题
+        actionBar.setDisplayShowTitleEnabled(false);
+        //设置使用logo
+        actionBar.setDisplayUseLogoEnabled(true);
+        //设置logo
+        actionBar.setLogo(R.drawable.news);
+        //设置ActionBar背景
+        Drawable background = getResources().getDrawable(R.drawable.top_bar_background);
+        actionBar.setBackgroundDrawable(background);
+        //设置是将应用程序图标转变成可点击图标,并添加返回按钮
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        return super.onCreateOptionsMenu(menu);
     }
 
     private class GetNewsList extends AsyncTask<String, Void, NewsList> {
@@ -104,9 +129,10 @@ public class MainActivity extends ListActivity {
         }
     }
 
-    @Override
+    //这个地方需要修改
+    //@Override
     protected void onListItemClick(ListView l, View v,int position, long id){
-        super.onListItemClick(l, v, position, id);
+     //   super.onListItemClick(l, v, position, id);
 
         Intent intent = new Intent(this, ProfileActivity.class);
         String news_ID = listItems.getNewsList().get(position-1).getNewsID();

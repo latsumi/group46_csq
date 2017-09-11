@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#e066ccff"
+    tools:context="com.java.group46_csq.MainActivity">
+
+    <!-- 圆形头像-->
+    <com.java.group46_csq.CircleImageView
+        android:id="@+id/circleimageview"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:layout_marginLeft="45dp"
+        android:layout_marginTop="30dp"
+        android:src="@drawable/circlel_header"
+        app:civ_border_color="#66CCFF"
+        app:civ_border_width="2dp" />
+    <!-- 菜单列表-->
+
+    <TextView
+        android:id="@+id/tv_item1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:gravity="center"
+        android:text="新闻浏览"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/tv_item2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:gravity="center"
+        android:text="收藏"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/tv_item3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:gravity="center"
+        android:text="测试1"
+        android:textSize="16sp" />
+
+
+</LinearLayout>
