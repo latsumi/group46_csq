@@ -16,7 +16,6 @@ import com.java.group46_csq.util.News;
 
 public class ProfileActivity extends Activity{
     private TextView title;
-    private TextView author;
     private TextView textsrc;
     private TextView maintext;
 
@@ -35,7 +34,6 @@ public class ProfileActivity extends Activity{
         n = new News(news_ID);
 
         title = (TextView) findViewById(R.id.title);
-        author = (TextView) findViewById(R.id.author);
         textsrc = (TextView) findViewById(R.id.textsrc);
         maintext = (TextView) findViewById(R.id.maintext);
 
