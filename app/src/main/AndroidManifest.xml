@@ -20,7 +20,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ProfileActivitiy"
+            android:name=".ProfileActivity"
             android:label="@string/app_name"/>
     </application>
 

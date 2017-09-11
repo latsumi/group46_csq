@@ -15,18 +15,6 @@
         android:text="这是新闻标题" />
 
     <TextView
-        android:id="@+id/author"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        android:layout_above="@+id/maintext"
-        android:layout_marginLeft="60dp"
-        android:layout_marginStart="60dp"
-        android:layout_toEndOf="@+id/textsrc"
-        android:layout_toRightOf="@+id/textsrc"
-        android:text="作者" />
-
-    <TextView
         android:id="@+id/textsrc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

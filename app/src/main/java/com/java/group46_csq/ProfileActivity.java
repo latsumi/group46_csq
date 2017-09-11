@@ -14,7 +14,7 @@ import com.java.group46_csq.util.News;
  * Created by csq on 17/9/9.
  */
 
-public class ProfileActivitiy extends Activity{
+public class ProfileActivity extends Activity{
     private TextView title;
     private TextView author;
     private TextView textsrc;

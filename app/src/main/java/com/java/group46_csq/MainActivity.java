@@ -107,7 +107,7 @@ public class MainActivity extends ListActivity {
     protected void onListItemClick(ListView l, View v,int position, long id){
         super.onListItemClick(l, v, position, id);
 
-        Intent intent = new Intent(this, ProfileActivitiy.class);
+        Intent intent = new Intent(this, ProfileActivity.class);
         String news_ID = listItems.getNewsList().get(position-1).getNewsID();
         Log.d("----tag-put-string----", news_ID);
         intent.putExtra("news_ID", news_ID);
