@@ -1,0 +1,26 @@
+[
+    {
+        "merged": "/home/zhy/AndroidStudioProjects/test2/library/build/intermediates/res/merged/androidTest/debug/drawable-hdpi-v4/indicator_arrow.png",
+        "source": "/home/zhy/AndroidStudioProjects/test2/library/build/intermediates/bundles/debug/res/drawable-hdpi-v4/indicator_arrow.png"
+    },
+    {
+        "merged": "/home/zhy/AndroidStudioProjects/test2/library/build/intermediates/res/merged/androidTest/debug/drawable-hdpi-v4/default_ptr_rotate.png",
+        "source": "/home/zhy/AndroidStudioProjects/test2/library/build/intermediates/bundles/debug/res/drawable-hdpi-v4/default_ptr_rotate.png"
+    },
+    {
+        "merged": "/home/zhy/AndroidStudioProjects/test2/library/build/intermediates/res/merged/androidTest/debug/drawable-hdpi-v4/default_ptr_flip.png",
+        "source": "/home/zhy/AndroidStudioProjects/test2/library/build/intermediates/bundles/debug/res/drawable-hdpi-v4/default_ptr_flip.png"
+    },
+    {
+        "merged": "/Users/csq/Desktop/group46_csq/library/build/intermediates/res/merged/androidTest/debug/drawable-hdpi-v4/default_ptr_flip.png",
+        "source": "/Users/csq/Desktop/group46_csq/library/build/intermediates/bundles/debug/res/drawable-hdpi-v4/default_ptr_flip.png"
+    },
+    {
+        "merged": "/Users/csq/Desktop/group46_csq/library/build/intermediates/res/merged/androidTest/debug/drawable-hdpi-v4/default_ptr_rotate.png",
+        "source": "/Users/csq/Desktop/group46_csq/library/build/intermediates/bundles/debug/res/drawable-hdpi-v4/default_ptr_rotate.png"
+    },
+    {
+        "merged": "/Users/csq/Desktop/group46_csq/library/build/intermediates/res/merged/androidTest/debug/drawable-hdpi-v4/indicator_arrow.png",
+        "source": "/Users/csq/Desktop/group46_csq/library/build/intermediates/bundles/debug/res/drawable-hdpi-v4/indicator_arrow.png"
+    }
+]
