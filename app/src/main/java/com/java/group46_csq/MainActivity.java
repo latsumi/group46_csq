@@ -4,17 +4,18 @@ import android.app.ActionBar;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
-import android.app.ListActivity;
+
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.*;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.content.Intent;
 import android.widget.Toast;
 import android.app.Activity;
 import android.graphics.drawable.Drawable;
-
 
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
@@ -23,10 +24,14 @@ import com.java.group46_csq.util.NewsList;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnLastItemVisibleListener;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity{
     NewsList listItems;
     private PullToRefreshListView mPullRefreshListView;
     private NewsAdapter mAdapter;
+    private ListView mLeftDrawer;
+
+
+    String[] menu_array = {"新闻分类","新闻收藏","夜间模式"," 设 置 "};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +41,26 @@ public class MainActivity extends Activity {
         listItems = new NewsList();
         mAdapter = new NewsAdapter(this,android.R.layout.simple_list_item_2,listItems);
         mPullRefreshListView = (PullToRefreshListView) findViewById(R.id.pull_refresh_list);
+        mLeftDrawer = (ListView) findViewById(R.id.left_drawer);
 
+        ArrayAdapter<String> adapter=new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,menu_array);
+        mLeftDrawer.setAdapter(adapter);
+        mLeftDrawer.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                switch (position) {
+                    case 0:
+                        Intent intent=
+                                new Intent(MainActivity.this,TestActivity.class);
+                        startActivity(intent);
+                        break;
+                    default:
+                        break;
+                }
+
+
+            }
+        });
         // Set a listener to be invoked when the list should be refreshed.
         mPullRefreshListView.setOnRefreshListener(new OnRefreshListener<ListView>() {
             @Override
@@ -84,6 +108,7 @@ public class MainActivity extends Activity {
 
 
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

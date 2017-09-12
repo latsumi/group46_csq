@@ -1,5 +1,10 @@
 <resources>
     <string name="app_name">group46_csq</string>
     <string name="myFavorite_filename">MyFavorite.txt</string>
-
+    <string-array name="menu_array">
+        <item>新闻分类</item>
+        <item>查看收藏</item>
+        <item>夜间模式</item>
+        <item> 设 置 </item>
+    </string-array>
 </resources>
