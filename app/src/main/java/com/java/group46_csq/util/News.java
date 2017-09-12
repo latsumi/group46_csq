@@ -20,7 +20,6 @@ public class News implements Serializable {
     private String newsClassTag;
     private String news_Content;
     private String[] news_Pictures;
-    private int temp;
 
     public News() {
         this.news_ID = "";
@@ -29,7 +28,6 @@ public class News implements Serializable {
         this.news_Intro = "";
         this.news_Content = "";
         this.news_Pictures = new String[0];
-        this.temp = 0;
     }
 
     public News(String ID) {

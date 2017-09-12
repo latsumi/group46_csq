@@ -25,7 +25,8 @@ public class LaunchActivity extends Activity {
 
     class splashhandler implements Runnable{
         public void run() {
-            startActivity(new Intent(getApplication(),MainActivity.class));// 这个线程的作用3秒后就是进入到你的主界面
+            Intent intent = new Intent(getApplication(),MainActivity.class);
+            startActivity(intent);// 这个线程的作用3秒后就是进入到你的主界面
             LaunchActivity.this.finish();// 把当前的LaunchActivity结束掉
         }
     }

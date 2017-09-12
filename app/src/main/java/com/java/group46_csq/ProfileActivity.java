@@ -1,8 +1,11 @@
 package com.java.group46_csq;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.Locale;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -31,7 +34,10 @@ public class ProfileActivity extends Activity{
     private TextToSpeech mTextToSpeech = null;
 
     private News n;
-    private FileService fileService;
+
+    private boolean hasBeenRead = true;
+
+    Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,15 +47,19 @@ public class ProfileActivity extends Activity{
         Intent i = getIntent();
         String news_ID = i.getStringExtra("news_ID");
 
-        Log.d("----------tag--------", news_ID);
+        //Log.d("----------tag--------", news_ID);
 
         n = new News(news_ID);
+        /*
         try {
-            if((fileService.findIfSaved("savedNews.txt", n))==null)
-            fileService.saveNews("savedNews.txt", n);
+            Log.d("----tag----", context.getFilesDir().toString());
+            if((FileService.findIfSaved("savedNews", n))==null)
+            FileService.saveNews("savedNews", n);
 
         } catch (Exception e) {
+            Log.d("----Exception----", e.getStackTrace().toString());
         }
+        */
 
         title = (TextView) findViewById(R.id.title);
         textsrc = (TextView) findViewById(R.id.textsrc);
@@ -109,13 +119,38 @@ public class ProfileActivity extends Activity{
 
         @Override
         protected String doInBackground(Void... params) {
-            n.getNewsDetail();
+            //n.getNewsDetail();
+            News res = new News();
+
             try {
-                n = fileService.findIfSaved("savedNews.txt", n);
-                title.setText(n.getNewsTitle());
-                maintext.setText(n.getNewsContent());
+                Log.d("----Try---", "---enter try---");
+                String filename = "test";
+                FileInputStream fis = openFileInput("test");
+                res = FileService.findIfSaved(fis, n);
+                Log.d("----Try---", "----after findIfSaved");
+                if (res.getNewsID().equals("")) {
+                    hasBeenRead = false;
+                    n.getNewsDetail();
+                }
+                else {
+                    n = res;
+                }
             } catch (Exception e) {
+                Log.d("---Exception---", "Exception in GetNews");
             }
+
+            FileOutputStream fos = null;
+            if (!hasBeenRead) {
+                try {
+                    fos = openFileOutput("test", Context.MODE_APPEND);
+                    FileService.saveNews(fos, n);
+                    fos.close();
+                } catch (Exception e) {
+                    Log.d("----Exception----", "exception while open the target file");
+                }
+            }
+
+
             return n.getNewsContent();
 
         }

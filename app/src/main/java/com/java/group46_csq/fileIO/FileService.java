@@ -1,5 +1,7 @@
 package com.java.group46_csq.fileIO;
 
+import android.util.Log;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,23 +25,17 @@ public class FileService {
     }
 
 
-    public static void saveNews(String filename, News news) throws Exception {
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(filename, true);
-        } catch (FileNotFoundException e) {
-        }
+    public static void saveNews(FileOutputStream fos, News news) throws Exception {
         ObjectOutputStream oso = new ObjectOutputStream(fos);
         try {
             oso.writeObject(news);
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.d("---Exception---", "Exception in saveNews");
         }
         oso.close();
     }
 
-    public static News findIfSaved(String filename, News news) throws Exception {
-        FileInputStream fis = new FileInputStream(filename);
+    public static News findIfSaved(FileInputStream fis, News news) throws Exception {
         ObjectInputStream osi = new ObjectInputStream(fis);
 
         News res = new News();
@@ -56,6 +52,7 @@ public class FileService {
 
             }
         } catch (EOFException e) {
+            Log.d("---Exception---", "Exception in findIfSaved");
         } finally {
             osi.close();
             return res;
