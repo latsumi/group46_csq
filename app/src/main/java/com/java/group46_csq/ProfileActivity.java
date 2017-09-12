@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.speech.tts.TextToSpeech;
 import android.widget.Toast;
 
+import com.java.group46_csq.fileIO.FileService;
 import com.java.group46_csq.util.News;
 
 /**
@@ -30,9 +31,10 @@ public class ProfileActivity extends Activity{
     private TextToSpeech mTextToSpeech = null;
 
     private News n;
+    private FileService fileService;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState){
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.relative_example);
 
@@ -42,6 +44,12 @@ public class ProfileActivity extends Activity{
         Log.d("----------tag--------", news_ID);
 
         n = new News(news_ID);
+        try {
+            if((fileService.findIfSaved("savedNews.txt", n))==null)
+            fileService.saveNews("savedNews.txt", n);
+
+        } catch (Exception e) {
+        }
 
         title = (TextView) findViewById(R.id.title);
         textsrc = (TextView) findViewById(R.id.textsrc);
@@ -102,13 +110,21 @@ public class ProfileActivity extends Activity{
         @Override
         protected String doInBackground(Void... params) {
             n.getNewsDetail();
+            try {
+                n = fileService.findIfSaved("savedNews.txt", n);
+                title.setText(n.getNewsTitle());
+                maintext.setText(n.getNewsContent());
+            } catch (Exception e) {
+            }
             return n.getNewsContent();
+
         }
 
         @Override
         protected void onPostExecute(String res) {
             title.setText(n.getNewsTitle());
             maintext.setText(n.getNewsContent());
+
 
         }
     }

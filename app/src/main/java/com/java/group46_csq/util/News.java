@@ -3,6 +3,7 @@ package com.java.group46_csq.util;
 /**
  * Created by zhy on 17-9-9.
  */
+import java.io.Serializable;
 
 /*
  * Java Xiaoxueqi - Project
@@ -10,7 +11,7 @@ package com.java.group46_csq.util;
  * Created by Haoyu Zhao on Sep 5, 2017
  */
 
-public class News {
+public class News implements Serializable {
     private final static String queryurl = "http://166.111.68.66:2042/news/action/query/detail?newsId=";
 
     private String news_ID;
@@ -19,23 +20,25 @@ public class News {
     private String newsClassTag;
     private String news_Content;
     private String[] news_Pictures;
+    private int temp;
 
     public News() {
-        this.news_ID = null;
-        this.news_Title = null;
-        this.newsClassTag = null;
-        this.news_Intro = null;
-        this.news_Content = null;
-        this.news_Pictures = null;
+        this.news_ID = "";
+        this.news_Title = "";
+        this.newsClassTag = "";
+        this.news_Intro = "";
+        this.news_Content = "";
+        this.news_Pictures = new String[0];
+        this.temp = 0;
     }
 
     public News(String ID) {
         this.news_ID = ID;
-        this.news_Title = null;
-        this.newsClassTag = null;
-        this.news_Content = null;
-        this.news_Pictures = null;
-        this.news_Intro = null;
+        this.news_Title = "";
+        this.newsClassTag = "";
+        this.news_Intro = "";
+        this.news_Content = "";
+        this.news_Pictures = new String[0];
     }
 
     public void setNewsID(String ID) {
@@ -70,10 +73,6 @@ public class News {
         return this.news_Intro;
     }
 
-    public void setNewsContent(String news_Content) {
-        this.news_Content = news_Content;
-    }
-
     public String getNewsContent() {
         String res = "";
         /*
@@ -101,6 +100,11 @@ public class News {
         String pictures = ParseJson.parseNewsPictures(json_detail);
         String temp[] = pictures.split("\\s+");
         this.news_Pictures = temp;
+    }
+
+    //edited by csq on 17/9/12
+    public boolean equals(News news1, News news2){
+        return ((news1==null)||(news2==null))?false:(news1.news_ID.equals(news2.news_ID));
     }
 
 

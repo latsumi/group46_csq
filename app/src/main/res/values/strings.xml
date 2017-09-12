@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">group46_csq</string>
+    <string name="myFavorite_filename">MyFavorite.txt</string>
+
 </resources>
