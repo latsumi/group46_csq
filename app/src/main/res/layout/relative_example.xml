@@ -50,5 +50,14 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true" />
 
+    <Button
+        android:id="@+id/readButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="语音播报"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
 
 </RelativeLayout>
