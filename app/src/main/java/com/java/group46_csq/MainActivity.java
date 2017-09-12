@@ -8,6 +8,7 @@ import android.app.ListActivity;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.*;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.content.Intent;
 import android.widget.Toast;
@@ -48,6 +49,17 @@ public class MainActivity extends Activity {
 
                 // Do work to refresh the list here.
                 new GetMoreData().execute();
+            }
+        });
+
+        mPullRefreshListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+                String news_ID = listItems.getNewsList().get(position-1).getNewsID();
+                Log.d("----tag-put-string----", news_ID);
+                intent.putExtra("news_ID", news_ID);
+                startActivity(intent);
             }
         });
 
@@ -127,18 +139,6 @@ public class MainActivity extends Activity {
             // Call onRefreshComplete when the list has been refreshed.
             mPullRefreshListView.onRefreshComplete();
         }
-    }
-
-    //这个地方需要修改
-    //@Override
-    protected void onListItemClick(ListView l, View v,int position, long id){
-     //   super.onListItemClick(l, v, position, id);
-
-        Intent intent = new Intent(this, ProfileActivity.class);
-        String news_ID = listItems.getNewsList().get(position-1).getNewsID();
-        Log.d("----tag-put-string----", news_ID);
-        intent.putExtra("news_ID", news_ID);
-        startActivity(intent);
     }
 
 }

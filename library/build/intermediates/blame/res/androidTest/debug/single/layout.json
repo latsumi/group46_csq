@@ -4,6 +4,10 @@
         "source": "/home/zhy/AndroidStudioProjects/test2/library/build/intermediates/bundles/debug/res/layout/pull_to_refresh_header_vertical.xml"
     },
     {
+        "merged": "/home/zhy/AndroidStudioProjects/group46_csq/library/build/intermediates/res/merged/androidTest/debug/layout/pull_to_refresh_header_vertical.xml",
+        "source": "/home/zhy/AndroidStudioProjects/group46_csq/library/build/intermediates/bundles/debug/res/layout/pull_to_refresh_header_vertical.xml"
+    },
+    {
         "merged": "/Users/csq/Desktop/group46_csq/library/build/intermediates/res/merged/androidTest/debug/layout/pull_to_refresh_header_vertical.xml",
         "source": "/Users/csq/Desktop/group46_csq/library/build/intermediates/bundles/debug/res/layout/pull_to_refresh_header_vertical.xml"
     },
@@ -14,5 +18,9 @@
     {
         "merged": "/Users/csq/Desktop/group46_csq/library/build/intermediates/res/merged/androidTest/debug/layout/pull_to_refresh_header_horizontal.xml",
         "source": "/Users/csq/Desktop/group46_csq/library/build/intermediates/bundles/debug/res/layout/pull_to_refresh_header_horizontal.xml"
+    },
+    {
+        "merged": "/home/zhy/AndroidStudioProjects/group46_csq/library/build/intermediates/res/merged/androidTest/debug/layout/pull_to_refresh_header_horizontal.xml",
+        "source": "/home/zhy/AndroidStudioProjects/group46_csq/library/build/intermediates/bundles/debug/res/layout/pull_to_refresh_header_horizontal.xml"
     }
 ]
