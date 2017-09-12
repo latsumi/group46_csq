@@ -64,7 +64,7 @@ public class NewsList {
         //set the parameters of the query url
         String param_url = "";
         //whether has the keywords
-        if (this.keyword != null) {
+        if (this.keyword != null && (!this.keyword.equals(""))) {
             param_url = param_url + "keyword=" + this.keyword + "&";
         }
 

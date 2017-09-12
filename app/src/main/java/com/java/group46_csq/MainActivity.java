@@ -33,12 +33,19 @@ public class MainActivity extends Activity{
 
     String[] menu_array = {"新闻分类","新闻收藏","夜间模式"," 设 置 "};
 
+    private String keyword;
+    private int category;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_view);
 
-        listItems = new NewsList();
+        //Intent i = getIntent();
+        //keyword = i.getStringExtra("keyword");
+        //category = Integer.parseInt(i.getStringExtra("category"));
+
+        listItems = new NewsList(keyword, category);
         mAdapter = new NewsAdapter(this,android.R.layout.simple_list_item_2,listItems);
         mPullRefreshListView = (PullToRefreshListView) findViewById(R.id.pull_refresh_list);
         mLeftDrawer = (ListView) findViewById(R.id.left_drawer);
@@ -79,11 +86,20 @@ public class MainActivity extends Activity{
         mPullRefreshListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+
                 Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
                 String news_ID = listItems.getNewsList().get(position-1).getNewsID();
                 Log.d("----tag-put-string----", news_ID);
                 intent.putExtra("news_ID", news_ID);
                 startActivity(intent);
+
+
+                /*
+                Intent test = new Intent(MainActivity.this, MainActivity.class);
+                test.putExtra("keyword", "北京");
+                test.putExtra("category", "0");
+                startActivity(test);
+                */
             }
         });
 

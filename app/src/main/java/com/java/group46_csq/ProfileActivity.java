@@ -125,11 +125,22 @@ public class ProfileActivity extends Activity{
             try {
                 Log.d("----Try---", "---enter try---");
                 String filename = "test";
-                FileInputStream fis = openFileInput("test");
-                res = FileService.findIfSaved(fis, n);
+                FileInputStream fis = null;
+                try {
+                    fis = openFileInput("test");
+                    res = FileService.findIfSaved(fis, n);
+                }
+                catch (Exception e) {
+                    Log.d("--Whether Use Network--", "Exception in catch clause, Use Network");
+                    n.getNewsDetail();
+                    res = new News();
+                }
+                Log.d("----Try---", "----before findIfSaved");
+
                 Log.d("----Try---", "----after findIfSaved");
                 if (res.getNewsID().equals("")) {
                     hasBeenRead = false;
+                    Log.d("--Whether Use Network--", "Use Network");
                     n.getNewsDetail();
                 }
                 else {
