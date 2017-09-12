@@ -151,7 +151,7 @@ public class ProfileActivity extends Activity{
             }
 
             FileOutputStream fos = null;
-            if (!hasBeenRead) {
+            if (!n.getNewsContent().equals("") && !hasBeenRead) {
                 try {
                     fos = openFileOutput("test", Context.MODE_APPEND);
                     FileService.saveNews(fos, n);
