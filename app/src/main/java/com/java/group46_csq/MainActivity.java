@@ -24,14 +24,19 @@ import com.java.group46_csq.util.NewsList;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnLastItemVisibleListener;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
+
 public class MainActivity extends Activity{
     NewsList listItems;
     private PullToRefreshListView mPullRefreshListView;
     private NewsAdapter mAdapter;
+    private ListView actualListView;
+
     private ListView mLeftDrawer;
 
 
-    String[] menu_array = {"新闻分类","新闻收藏","夜间模式"," 设 置 "};
+    String[] menu_array = {"新闻分类","本地新闻","夜间模式"," 设 置 "};
 
     private String keyword;
     private int category;
@@ -41,6 +46,7 @@ public class MainActivity extends Activity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_view);
 
+        //given the parameters to set up the list
         //Intent i = getIntent();
         //keyword = i.getStringExtra("keyword");
         //category = Integer.parseInt(i.getStringExtra("category"));
@@ -48,6 +54,11 @@ public class MainActivity extends Activity{
         listItems = new NewsList(keyword, category);
         mAdapter = new NewsAdapter(this,android.R.layout.simple_list_item_2,listItems);
         mPullRefreshListView = (PullToRefreshListView) findViewById(R.id.pull_refresh_list);
+
+        /*
+            edit by csq
+            left drawer
+         */
         mLeftDrawer = (ListView) findViewById(R.id.left_drawer);
 
         ArrayAdapter<String> adapter=new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,menu_array);
@@ -61,13 +72,40 @@ public class MainActivity extends Activity{
                                 new Intent(MainActivity.this,TestActivity.class);
                         startActivity(intent);
                         break;
-                    default:
+                    case 1:
+                        listItems = new NewsList();
+                        mAdapter = new NewsAdapter(MainActivity.this,android.R.layout.simple_list_item_2,listItems);
+                        actualListView = mPullRefreshListView.getRefreshableView();
+                        registerForContextMenu(actualListView);
+                        actualListView.setAdapter(mAdapter);
+                        new LoadDataFromLocal().execute("localnews");
+                        break;
+                    case 2:
+                        listItems = new NewsList();
+                        listItems.setCategory(2);
+                        mAdapter = new NewsAdapter(MainActivity.this,android.R.layout.simple_list_item_2,listItems);
+                        actualListView = mPullRefreshListView.getRefreshableView();
+                        registerForContextMenu(actualListView);
+                        actualListView.setAdapter(mAdapter);
+                        new GetMoreData().execute();
+                        break;
+                    case 3:
+                        listItems = new NewsList();
+                        listItems.setCategory(3);
+                        mAdapter = new NewsAdapter(MainActivity.this,android.R.layout.simple_list_item_2,listItems);
+                        actualListView = mPullRefreshListView.getRefreshableView();
+                        registerForContextMenu(actualListView);
+                        actualListView.setAdapter(mAdapter);
+                        new GetMoreData().execute();
                         break;
                 }
 
 
             }
         });
+        //end edit by csq , left drawer
+
+
         // Set a listener to be invoked when the list should be refreshed.
         mPullRefreshListView.setOnRefreshListener(new OnRefreshListener<ListView>() {
             @Override
@@ -89,6 +127,11 @@ public class MainActivity extends Activity{
 
                 Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
                 String news_ID = listItems.getNewsList().get(position-1).getNewsID();
+
+                //add the statement that the news has benn read
+                listItems.getNewsList().get(position-1).isRead = true;
+
+
                 Log.d("----tag-put-string----", news_ID);
                 intent.putExtra("news_ID", news_ID);
                 startActivity(intent);
@@ -112,7 +155,7 @@ public class MainActivity extends Activity{
             }
         });
 
-        ListView actualListView = mPullRefreshListView.getRefreshableView();
+        actualListView = mPullRefreshListView.getRefreshableView();
 
         // Need to use the Actual ListView when registering for Context Menu
         registerForContextMenu(actualListView);
@@ -146,6 +189,16 @@ public class MainActivity extends Activity{
         return super.onCreateOptionsMenu(menu);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        mAdapter.notifyDataSetChanged();
+
+        // Call onRefreshComplete when the list has been refreshed.
+        mPullRefreshListView.onRefreshComplete();
+    }
+
     private class GetNewsList extends AsyncTask<String, Void, NewsList> {
         @Override
         protected void onPreExecute() {}
@@ -175,6 +228,40 @@ public class MainActivity extends Activity{
 
         @Override
         protected void onPostExecute(NewsList listItems) {
+            mAdapter.notifyDataSetChanged();
+
+            // Call onRefreshComplete when the list has been refreshed.
+            mPullRefreshListView.onRefreshComplete();
+        }
+    }
+
+    private class LoadDataFromLocal extends AsyncTask<String, Void, String> {
+        FileInputStream fis;
+        @Override
+        protected void onPreExecute() {}
+
+        @Override
+        protected String doInBackground(String... params) {
+            ObjectInputStream ois = null;
+            try {
+                fis = openFileInput(params[0]);
+            }
+            catch (Exception e) {
+                Log.d("---Exception---", "Exception happends in LoadDataFromLocal AsyncTast");
+            }
+            try {
+                listItems.loadFromLocal(fis);
+                fis.close();
+            }
+            catch (Exception e) {}
+            finally {
+                Log.d("--Counts--", "number of news loaded: " + listItems.length());
+            }
+            return "";
+        }
+
+        @Override
+        protected void onPostExecute(String str) {
             mAdapter.notifyDataSetChanged();
 
             // Call onRefreshComplete when the list has been refreshed.

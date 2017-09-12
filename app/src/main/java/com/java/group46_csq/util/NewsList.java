@@ -10,17 +10,27 @@ package com.java.group46_csq.util;
  * Created by Haoyu Zhao on Sep 9, 2017
  */
 
+import android.util.Log;
+
+import com.java.group46_csq.ProfileActivity;
+
+import java.io.EOFException;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 
 public class NewsList {
     private final static int pageSize = 20;
-    private final static String queryrul = "http://166.111.68.66:2042/news/action/query/latest?";
+    private final static String queryrul = "http://166.111.68.66:2042/news/action/query/";
 
     private ArrayList<News> news_list;
 
     private int pageNo;
     private int category;
     private String keyword;
+
+    private boolean isLoadFromLocal = false;
 
     public NewsList() {
         this.news_list = new ArrayList<News>();
@@ -58,14 +68,39 @@ public class NewsList {
         this.category = code;
     }
 
+    public void loadFromLocal(FileInputStream fis) {
+        isLoadFromLocal = true;
+        try {
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            while (true) {
+                News news1 = new News();
+                Log.d("--point--", "1");
+                news1 = (News) ois.readObject();
+                Log.d("--point--", "2");
+                byte[] buf = new byte[4];
+                fis.read(buf);
+                Log.d("--point--", "3");
+                this.news_list.add(news1);
+                Log.d("---Counts---", "Counts the number of news");
+            }
+        } catch (Exception e) {
+            Log.d("----Exception-----", "exception in function loadFromLocal");
+        }
+    }
     public void refresh() {
+        if (isLoadFromLocal) {
+            return;
+        }
         this.pageNo += 1;
 
         //set the parameters of the query url
         String param_url = "";
         //whether has the keywords
         if (this.keyword != null && (!this.keyword.equals(""))) {
-            param_url = param_url + "keyword=" + this.keyword + "&";
+            param_url = param_url + "search?" + "keyword=" + this.keyword + "&";
+        }
+        else {
+            param_url = param_url + "latest?";
         }
 
         //always have the pageNo and the pageSize parameters

@@ -121,13 +121,14 @@ public class ProfileActivity extends Activity{
         protected String doInBackground(Void... params) {
             //n.getNewsDetail();
             News res = new News();
+            String filename = "localnews";
 
             try {
                 Log.d("----Try---", "---enter try---");
-                String filename = "test";
+
                 FileInputStream fis = null;
                 try {
-                    fis = openFileInput("test");
+                    fis = openFileInput(filename);
                     res = FileService.findIfSaved(fis, n);
                 }
                 catch (Exception e) {
@@ -153,7 +154,7 @@ public class ProfileActivity extends Activity{
             FileOutputStream fos = null;
             if (!n.getNewsContent().equals("") && !hasBeenRead) {
                 try {
-                    fos = openFileOutput("test", Context.MODE_APPEND);
+                    fos = openFileOutput(filename, Context.MODE_APPEND);
                     FileService.saveNews(fos, n);
                     fos.close();
                 } catch (Exception e) {

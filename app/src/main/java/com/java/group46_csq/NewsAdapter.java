@@ -5,6 +5,7 @@ package com.java.group46_csq;
  */
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,6 +55,10 @@ public class NewsAdapter extends BaseAdapter {
         }
         TextView text1 = (TextView) view.findViewById(android.R.id.text1);
         TextView text2 = (TextView) view.findViewById(android.R.id.text2);
+        if (listItems.getNewsList().get(position).isRead) {
+            text1.setTextColor(Color.parseColor("#666666"));
+            text2.setTextColor(Color.parseColor("#666666"));
+        }
         text1.setText(listItems.getNewsList().get(position).getNewsTitle());
         text2.setText(listItems.getNewsList().get(position).getNewsIntro());
         return view;

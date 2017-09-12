@@ -21,6 +21,8 @@ public class News implements Serializable {
     private String news_Content;
     private String[] news_Pictures;
 
+    public boolean isRead = false;
+
     public News() {
         this.news_ID = "";
         this.news_Title = "";
