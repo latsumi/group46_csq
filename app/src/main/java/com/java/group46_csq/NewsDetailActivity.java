@@ -2,7 +2,9 @@ package com.java.group46_csq;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
 import java.util.Locale;
+import java.util.TreeSet;
 
 import android.app.Activity;
 import android.content.Context;
@@ -22,6 +24,7 @@ import android.widget.Toast;
 import com.java.group46_csq.fileIO.FileService;
 import com.java.group46_csq.util.GetNetRes;
 import com.java.group46_csq.util.News;
+import com.java.group46_csq.util.NewsList;
 
 /**
  * Created by csq on 17/9/9.
@@ -34,12 +37,16 @@ public class NewsDetailActivity extends Activity{
     private ImageView news_image;
 
     private Button readButton;
+    private Button addLike;
+    private Button delLike;
 
     private TextToSpeech mTextToSpeech = null;
 
     private News n;
 
     private boolean hasBeenRead = true;
+
+    private TreeSet<News> likes;
 
     Context context;
 
@@ -72,6 +79,10 @@ public class NewsDetailActivity extends Activity{
         news_image = (ImageView) findViewById(R.id.news_image);
 
         readButton = (Button) findViewById(R.id.readButton);
+        addLike = (Button) findViewById(R.id.addLike);
+        delLike = (Button) findViewById(R.id.delLike);
+
+        likes = new TreeSet<News>();
 
         View parent = (View) title.getParent();
         parent.setBackgroundColor(getResources().getColor(android.R.color.holo_blue_bright));
@@ -79,6 +90,8 @@ public class NewsDetailActivity extends Activity{
 
 
         new GetNews().execute();
+
+        new LoadLikesDataFromLocal().execute("likes");
 
         mTextToSpeech=new TextToSpeech(this, new TextToSpeech.OnInitListener() {
 
@@ -101,6 +114,20 @@ public class NewsDetailActivity extends Activity{
             public void onClick(View arg0) {
                 //朗读EditText里的内容
                 mTextToSpeech.speak(maintext.getText().toString(), TextToSpeech.QUEUE_FLUSH, null);
+            }
+        });
+
+        addLike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new SaveLike().execute("likes");
+            }
+        });
+
+        delLike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new DelLike().execute("likes");
             }
         });
 
@@ -229,6 +256,108 @@ public class NewsDetailActivity extends Activity{
             }
         }
 
+    }
+
+    private class LoadLikesDataFromLocal extends AsyncTask<String, Void, String> {
+        FileInputStream fis;
+        @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            ObjectInputStream ois = null;
+            try {
+                fis = openFileInput(params[0]);
+                ois = new ObjectInputStream(fis);
+            }
+            catch (Exception e) {
+                Log.d("---Exception---", "Exception happends in LoadLikesDataFromLocal AsyncTast");
+                return "exp";
+            }
+            try {
+                likes = (TreeSet<News>)ois.readObject();
+                ois.close();
+                fis.close();
+            }
+            catch (Exception e) {
+                return "exp";
+            }
+            finally {
+                Log.d("--Counts--", "number of news loaded: " + likes.size());
+            }
+            return "suc";
+        }
+
+        @Override
+        protected void onPostExecute(String str) {
+            if (str.equals("exp")) {
+                likes = new TreeSet<News>();
+            }
+        }
+    }
+
+    private class SaveLike extends AsyncTask<String, Void, String> {
+        @Override
+        protected void onPreExecute() {}
+
+        @Override
+        protected String doInBackground(String...params) {
+            if (likes.add(n)) {
+                FileOutputStream fos = null;
+                try {
+                    fos = openFileOutput(params[0], Context.MODE_PRIVATE);
+                    n.isRead = true;
+                    FileService.saveNewsSet(fos, likes);
+                    fos.close();
+                } catch (Exception e) {
+                    Log.d("----Exception----", "exception while open the target file");
+                }
+                return "add";
+            }
+            return "notadd";
+        }
+
+        @Override
+        protected void onPostExecute(String res) {
+            if (res.equals("add")) {
+                Toast.makeText(NewsDetailActivity.this, "收藏成功", Toast.LENGTH_SHORT).show();
+            }
+            else {
+                Toast.makeText(NewsDetailActivity.this, "已经收藏", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private class DelLike extends AsyncTask<String, Void, String> {
+        @Override
+        protected void onPreExecute() {}
+
+        @Override
+        protected String doInBackground(String...params) {
+            if (likes.remove(n)) {
+                FileOutputStream fos = null;
+                try {
+                    fos = openFileOutput(params[0], Context.MODE_PRIVATE);
+                    FileService.saveNewsSet(fos, likes);
+                    fos.close();
+                } catch (Exception e) {
+                    Log.d("----Exception----", "exception while open the target file");
+                }
+                return "del";
+            }
+            return "notdel";
+        }
+
+        @Override
+        protected void onPostExecute(String res) {
+            if (res.equals("del")) {
+                Toast.makeText(NewsDetailActivity.this, "取消收藏", Toast.LENGTH_SHORT).show();
+            }
+            else {
+                Toast.makeText(NewsDetailActivity.this, "没有收藏", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
 }

@@ -11,7 +11,7 @@ import java.io.Serializable;
  * Created by Haoyu Zhao on Sep 5, 2017
  */
 
-public class News implements Serializable {
+public class News implements Serializable, Comparable {
     private final static String queryurl = "http://166.111.68.66:2042/news/action/query/detail?newsId=";
 
     private String news_ID;
@@ -105,6 +105,12 @@ public class News implements Serializable {
     //edited by csq on 17/9/12
     public boolean equals(News news1, News news2){
         return ((news1==null)||(news2==null))?false:(news1.news_ID.equals(news2.news_ID));
+    }
+
+    //added by zhy on Sep 13, 2017
+    public int compareTo(Object e) {
+        News t = (News)e;
+        return this.getNewsID().compareTo(t.getNewsID());
     }
 
 

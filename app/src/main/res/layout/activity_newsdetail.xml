@@ -28,17 +28,6 @@
         android:layout_alignRight="@+id/readButton"
         android:layout_alignEnd="@+id/readButton" />
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/title"
-        android:minHeight="4dp"
-        android:minWidth="4dp"
-        android:text="收藏" />
-
 
     <Button
         android:id="@+id/readButton"
@@ -56,10 +45,10 @@
         android:layout_width="500dp"
         android:layout_height="wrap_content"
         android:id="@+id/scrollView"
+        android:layout_marginTop="86dp"
         android:layout_below="@+id/readButton"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="18dp">
+        android:layout_alignParentStart="true">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -91,6 +80,25 @@
 
 
     </ScrollView>
+
+    <Button
+        android:id="@+id/addLike"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="添加收藏"
+        android:layout_alignTop="@+id/readButton"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="18dp" />
+
+    <Button
+        android:id="@+id/delLike"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="取消收藏"
+        android:layout_below="@+id/addLike"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
 
 </RelativeLayout>

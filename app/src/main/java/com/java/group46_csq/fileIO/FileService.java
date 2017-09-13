@@ -13,6 +13,8 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Iterator;
+import java.util.TreeSet;
 
 import com.java.group46_csq.util.News;
 
@@ -25,7 +27,7 @@ public class FileService {
     public FileService() {
     }
 
-
+    //edited by zhy
     public static void saveNews(FileOutputStream fos, News news) throws Exception {
         ObjectOutputStream oso = new ObjectOutputStream(fos);
         try {
@@ -33,9 +35,26 @@ public class FileService {
         } catch (IOException e) {
             Log.d("---Exception---", "Exception in saveNews");
         }
-        oso.close();
+        finally {
+            oso.close();
+        }
     }
 
+    //creatd by zhy
+    public static void saveNewsSet (FileOutputStream fos, TreeSet<News> set) throws Exception {
+        ObjectOutputStream oso = new ObjectOutputStream(fos);
+        try {
+            oso.writeObject(set);
+        }
+        catch (IOException e) {
+            Log.d("---Exception---", "Exception in saveNewsSet");
+        }
+        finally {
+            oso.close();
+        }
+    }
+
+    //edited by zhy
     public static News findIfSaved(FileInputStream fis, News news) throws Exception {
         ObjectInputStream osi = new ObjectInputStream(fis);
 

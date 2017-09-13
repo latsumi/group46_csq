@@ -19,6 +19,7 @@ import android.graphics.drawable.Drawable;
 
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.java.group46_csq.util.News;
 import com.java.group46_csq.util.NewsList;
 import com.java.group46_csq.fileIO.FileService;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnLastItemVisibleListener;
@@ -26,6 +27,8 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
+import java.util.Iterator;
+import java.util.TreeSet;
 
 public class MainActivity extends Activity{
     NewsList listItems;
@@ -36,7 +39,7 @@ public class MainActivity extends Activity{
     private ListView mLeftDrawer;
 
 
-    String[] menu_array = {"  新闻分类","  本地新闻","  夜间模式","   设 置 "};
+    String[] menu_array = {"新闻分类","本地新闻","收藏","最新","科技"};
 
     private String keyword;
     private int category;
@@ -81,16 +84,23 @@ public class MainActivity extends Activity{
                         break;
                     case 2:
                         listItems = new NewsList();
-                        listItems.setCategory(2);
+                        mAdapter = new NewsAdapter(MainActivity.this,android.R.layout.simple_list_item_2,listItems);
+                        actualListView = mPullRefreshListView.getRefreshableView();
+                        registerForContextMenu(actualListView);
+                        actualListView.setAdapter(mAdapter);
+                        new LoadLikeDataFromLocal().execute("likes");
+                        break;
+                    case 3:
+                        listItems = new NewsList();
                         mAdapter = new NewsAdapter(MainActivity.this,android.R.layout.simple_list_item_2,listItems);
                         actualListView = mPullRefreshListView.getRefreshableView();
                         registerForContextMenu(actualListView);
                         actualListView.setAdapter(mAdapter);
                         new GetMoreData().execute();
                         break;
-                    case 3:
+                    case 4:
                         listItems = new NewsList();
-                        listItems.setCategory(3);
+                        listItems.setCategory(1);
                         mAdapter = new NewsAdapter(MainActivity.this,android.R.layout.simple_list_item_2,listItems);
                         actualListView = mPullRefreshListView.getRefreshableView();
                         registerForContextMenu(actualListView);
@@ -124,6 +134,9 @@ public class MainActivity extends Activity{
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
 
+                //need to be modified
+                //need to add a if-else clause
+                //important
                 Intent intent = new Intent(MainActivity.this, NewsDetailActivity.class);
                 String news_ID = listItems.getNewsList().get(position-1).getNewsID();
 
@@ -250,5 +263,52 @@ public class MainActivity extends Activity{
             mPullRefreshListView.onRefreshComplete();
         }
     }
+
+    private class LoadLikeDataFromLocal extends AsyncTask<String, Void, String> {
+        FileInputStream fis;
+        @Override
+        protected void onPreExecute() {}
+
+        @Override
+        protected String doInBackground(String... params) {
+            ObjectInputStream ois = null;
+            try {
+                fis = openFileInput(params[0]);
+                ois = new ObjectInputStream(fis);
+            }
+            catch (Exception e) {
+                Log.d("---Exception---", "Exception happends in LoadLikeDataFromLocal AsyncTast");
+            }
+            try {
+                Log.d("----tag----","enter try clause");
+                TreeSet<News> like = new TreeSet<News>();
+                like = (TreeSet<News>)ois.readObject();
+                Iterator<News> iter = like.iterator();
+                while (iter.hasNext()) {
+                    Log.d("---count---","----counting----");
+                    listItems.getNewsList().add(iter.next());
+                }
+                ois.close();
+                fis.close();
+            }
+            catch (Exception e) {
+                Log.d("---Exception---", "Exception happends in LoadDataFromLocal ReadObjects");
+            }
+            finally {
+                Log.d("--Counts--", "number of news loaded: " + listItems.getNewsList().size());
+            }
+            return "";
+        }
+
+        @Override
+        protected void onPostExecute(String str) {
+            mAdapter.notifyDataSetChanged();
+
+            // Call onRefreshComplete when the list has been refreshed.
+            mPullRefreshListView.onRefreshComplete();
+        }
+    }
+
+
 
 }
