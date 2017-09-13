@@ -7,10 +7,12 @@ import java.util.Locale;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Button;
 
@@ -18,6 +20,7 @@ import android.speech.tts.TextToSpeech;
 import android.widget.Toast;
 
 import com.java.group46_csq.fileIO.FileService;
+import com.java.group46_csq.util.GetNetRes;
 import com.java.group46_csq.util.News;
 
 /**
@@ -28,6 +31,7 @@ public class ProfileActivity extends Activity{
     private TextView title;
     private TextView textsrc;
     private TextView maintext;
+    private ImageView news_image;
 
     private Button readButton;
 
@@ -65,6 +69,8 @@ public class ProfileActivity extends Activity{
         textsrc = (TextView) findViewById(R.id.textsrc);
         maintext = (TextView) findViewById(R.id.maintext);
 
+        news_image = (ImageView) findViewById(R.id.news_image);
+
         readButton = (Button) findViewById(R.id.readButton);
 
         View parent = (View) title.getParent();
@@ -95,6 +101,13 @@ public class ProfileActivity extends Activity{
             public void onClick(View arg0) {
                 //朗读EditText里的内容
                 mTextToSpeech.speak(maintext.getText().toString(), TextToSpeech.QUEUE_FLUSH, null);
+            }
+        });
+
+        news_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new GetImage().execute();
             }
         });
 
@@ -173,8 +186,49 @@ public class ProfileActivity extends Activity{
             title.setText(n.getNewsTitle());
             maintext.setText(n.getNewsContent());
 
+            //news_image.setImageResource(R.mipmap.loading);
 
         }
+    }
+
+    private class GetImage extends AsyncTask<Void, Void, Bitmap> {
+        @Override
+        protected void onPreExecute() {
+
+        }
+
+        @Override
+        protected Bitmap doInBackground(Void... params) {
+            String[] arr = n.getNewsPictures();
+            int len = arr.length;
+            if (len == 0) {
+                return null;
+            }
+            else if (arr[0].equals("") && len == 1) {
+                return null;
+            }
+            else if (!arr[0].equals("") && !(arr[0]==null)) {
+                return GetNetRes.getUrlImg(arr[0]);
+            }
+            else if (!arr[1].equals("") && !(arr[1]==null)) {
+                return GetNetRes.getUrlImg(arr[1]);
+            }
+            else {
+                return null;
+            }
+
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap res) {
+            if (res == null) {
+                news_image.setImageResource(R.drawable.circlel_header);
+            }
+            else {
+                news_image.setImageBitmap(res);
+            }
+        }
+
     }
 
 }
