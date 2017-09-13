@@ -6,15 +6,21 @@ import java.io.ObjectInputStream;
 import java.util.Locale;
 import java.util.TreeSet;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ShareActionProvider;
 import android.widget.TextView;
 import android.widget.Button;
 
@@ -32,7 +38,6 @@ import com.java.group46_csq.util.NewsList;
 
 public class NewsDetailActivity extends Activity{
     private TextView title;
-    private TextView textsrc;
     private TextView maintext;
     private ImageView news_image;
 
@@ -73,19 +78,15 @@ public class NewsDetailActivity extends Activity{
         */
 
         title = (TextView) findViewById(R.id.title);
-        textsrc = (TextView) findViewById(R.id.textsrc);
         maintext = (TextView) findViewById(R.id.maintext);
 
         news_image = (ImageView) findViewById(R.id.news_image);
 
-        readButton = (Button) findViewById(R.id.readButton);
-        addLike = (Button) findViewById(R.id.addLike);
-        delLike = (Button) findViewById(R.id.delLike);
 
         likes = new TreeSet<News>();
 
         View parent = (View) title.getParent();
-        parent.setBackgroundColor(getResources().getColor(android.R.color.holo_blue_bright));
+        parent.setBackgroundColor(getResources().getColor(R.color.text_background_color));
         title.setTextAppearance(this,android.R.style.TextAppearance_DeviceDefault_Large);
 
 
@@ -108,28 +109,6 @@ public class NewsDetailActivity extends Activity{
             }
         });
 
-        readButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View arg0) {
-                //朗读EditText里的内容
-                mTextToSpeech.speak(maintext.getText().toString(), TextToSpeech.QUEUE_FLUSH, null);
-            }
-        });
-
-        addLike.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new SaveLike().execute("likes");
-            }
-        });
-
-        delLike.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new DelLike().execute("likes");
-            }
-        });
 
         news_image.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -140,7 +119,55 @@ public class NewsDetailActivity extends Activity{
 
 
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_newsdetail, menu);
+        ActionBar actionBar = getActionBar();
+        actionBar.setDisplayShowTitleEnabled(false);
+        actionBar.setDisplayUseLogoEnabled(true);
+        actionBar.setLogo(R.drawable.news);
+        Drawable background = getResources().getDrawable(R.drawable.top_bar_background);
+        actionBar.setBackgroundDrawable(background);
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
+        MenuItem shareItem = menu.findItem(R.id.action_share);
+        ShareActionProvider provider = (ShareActionProvider) shareItem.getActionProvider();
+        provider.setShareIntent(getDefaultIntent());
+
+
+
+
+
+
+        return super.onCreateOptionsMenu(menu);
+    }
+    private Intent getDefaultIntent() {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("image/*");  //修改此处来决定分享类型
+        return intent;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                return true;
+            case R.id.action_read:
+                mTextToSpeech.speak(maintext.getText().toString(), TextToSpeech.QUEUE_FLUSH, null);
+                return true;
+            case R.id.action_favo:
+                new SaveLike().execute("likes");
+                return true;
+            case R.id.action_unfavo:
+                new DelLike().execute("likes");
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
     @Override
     protected void onDestroy() {
         super.onDestroy();

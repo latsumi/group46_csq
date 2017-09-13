@@ -54,7 +54,7 @@ public class MainActivity extends Activity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.list_view);
+        setContentView(R.layout.activity_main);
 
         //given the parameters to set up the list
         //Intent i = getIntent();
@@ -211,7 +211,7 @@ public class MainActivity extends Activity{
         Drawable background = getResources().getDrawable(R.drawable.top_bar_background);
         actionBar.setBackgroundDrawable(background);
         //设置是将应用程序图标转变成可点击图标,并添加返回按钮
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setHomeButtonEnabled(true);
 
         MenuItem searchItem = menu.findItem(R.id.action_search);
         searchView = (SearchView) searchItem.getActionView();

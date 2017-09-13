@@ -30,8 +30,6 @@
             android:name=".NewsDetailActivity"
             android:label="@string/app_name"/>
 
-        <activity android:name=".CategorySetActivity"/>
-
 
     </application>
 
