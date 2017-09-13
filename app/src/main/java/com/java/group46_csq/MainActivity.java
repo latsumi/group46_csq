@@ -26,20 +26,25 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.OnLastItemVisibleLis
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.Iterator;
 import java.util.TreeSet;
 
 public class MainActivity extends Activity{
+    final static String[] mapping = {"科技","教育","军事","国内","社会","文化","汽车","国际","体育","财经","健康","娱乐"};
     NewsList listItems;
     private PullToRefreshListView mPullRefreshListView;
     private NewsAdapter mAdapter;
     private ListView actualListView;
 
+    private ArrayAdapter<String> adapter;
+
     private ListView mLeftDrawer;
 
-
-    String[] menu_array = {"新闻分类","本地新闻","收藏","最新","科技"};
+    String categoryStr;
+    int[] categoryArr;
+    String[] menu_array;
 
     private String keyword;
     private int category;
@@ -53,7 +58,7 @@ public class MainActivity extends Activity{
         //Intent i = getIntent();
         //keyword = i.getStringExtra("keyword");
         //category = Integer.parseInt(i.getStringExtra("category"));
-        FileService.writeFile(MainActivity.this, "categorySet.txt","111111110000");
+        //FileService.writeFile(MainActivity.this, "categorySet.txt","111111110000");
         listItems = new NewsList(keyword, category);
         mAdapter = new NewsAdapter(this,android.R.layout.simple_list_item_2,listItems);
         mPullRefreshListView = (PullToRefreshListView) findViewById(R.id.pull_refresh_list);
@@ -63,8 +68,8 @@ public class MainActivity extends Activity{
          */
         mLeftDrawer = (ListView) findViewById(R.id.left_drawer);
 
-        ArrayAdapter<String> adapter=new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,menu_array);
-        mLeftDrawer.setAdapter(adapter);
+        new ReadCategory().execute();
+
         mLeftDrawer.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
@@ -101,6 +106,15 @@ public class MainActivity extends Activity{
                     case 4:
                         listItems = new NewsList();
                         listItems.setCategory(1);
+                        mAdapter = new NewsAdapter(MainActivity.this,android.R.layout.simple_list_item_2,listItems);
+                        actualListView = mPullRefreshListView.getRefreshableView();
+                        registerForContextMenu(actualListView);
+                        actualListView.setAdapter(mAdapter);
+                        new GetMoreData().execute();
+                        break;
+                    default:
+                        listItems = new NewsList();
+                        listItems.setCategory(getCategoryNumber(position));
                         mAdapter = new NewsAdapter(MainActivity.this,android.R.layout.simple_list_item_2,listItems);
                         actualListView = mPullRefreshListView.getRefreshableView();
                         registerForContextMenu(actualListView);
@@ -176,8 +190,6 @@ public class MainActivity extends Activity{
 
         new GetMoreData().execute();
 
-
-
     }
 
 
@@ -209,6 +221,10 @@ public class MainActivity extends Activity{
 
         // Call onRefreshComplete when the list has been refreshed.
         mPullRefreshListView.onRefreshComplete();
+
+        //refresh the menu list
+        new ReadCategory().execute();
+
     }
 
     private class GetMoreData extends AsyncTask<Void, Void, NewsList> {
@@ -307,6 +323,72 @@ public class MainActivity extends Activity{
             // Call onRefreshComplete when the list has been refreshed.
             mPullRefreshListView.onRefreshComplete();
         }
+    }
+
+    private class ReadCategory extends AsyncTask<Void, Void, String> {
+        @Override
+        protected void onPreExecute() {}
+
+        @Override
+        protected String doInBackground(Void... params) {
+            String res = "";
+            try {
+                res = FileService.readFile(MainActivity.this, "categorySet.txt");
+            }
+            catch (IOException e) {
+                res = "111111110000";
+                FileService.writeFile(MainActivity.this, "categorySet.txt", res);
+            }
+            return res;
+        }
+
+        @Override
+        protected void onPostExecute(String res) {
+            categoryStr = res;
+            initMenuCategory();
+            adapter=new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1,menu_array);
+            mLeftDrawer.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
+            //mLeftDrawer.NotifyDataSetChanged();
+        }
+    }
+
+    private void initMenuCategory() {
+        categoryArr = new int[12];
+        for (int i = 0; i < categoryStr.length(); i++) {
+            categoryArr[i] = Integer.parseInt(categoryStr.substring(i,i+1));
+        }
+        int k = 0;
+        for (int i = 0; i < 12; i++) {
+            k += categoryArr[i];
+        }
+        menu_array = new String[5 + k];
+        menu_array[0] = "新闻分类";
+        menu_array[1] = "本地新闻";
+        menu_array[2] = "收藏";
+        menu_array[3] = "最新";
+        menu_array[4] = "推荐";
+        int count = 4;
+        int temp = 0;
+        while (temp < 12) {
+            if (categoryArr[temp] == 1) {
+                count++;
+                menu_array[count] = mapping[temp];
+            }
+            temp++;
+        }
+    }
+
+    private int getCategoryNumber(int i) {
+        int t = i - 4;
+        int temp = 0;
+        for (int j = 0; j < 12; j++) {
+            temp += categoryArr[j];
+            if (temp == t) {
+                return j+1;
+            }
+        }
+        return 0;
     }
 
 
