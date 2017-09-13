@@ -14,6 +14,8 @@ import android.util.Log;
 
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.TreeSet;
 
@@ -120,7 +122,12 @@ public class NewsList {
         String param_url = "";
         //whether has the keywords
         if (this.keyword != null && (!this.keyword.equals(""))) {
-            param_url = param_url + "search?" + "keyword=" + this.keyword + "&";
+            try {
+                param_url = param_url + "search?" + "keyword=" + URLEncoder.encode(this.keyword, "utf-8") + "&";
+            }
+            catch (UnsupportedEncodingException e) {
+                Log.d("--Encoding Exception--", "Exception happens when encoding the chinese into utf-8");
+            }
         }
         else {
             param_url = param_url + "latest?";
@@ -136,7 +143,9 @@ public class NewsList {
         }
 
         String url = NewsList.queryrul + param_url;
+        Log.d("----See the url----", url);
         String raw_json_list = GetNetRes.getUrlRes(url);
+        Log.d("--See the raw json--", raw_json_list);
 
         //this is some test code
         /*

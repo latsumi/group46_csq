@@ -222,6 +222,15 @@ public class MainActivity extends Activity{
                 Toast t = Toast.makeText(MainActivity.this, query, Toast.LENGTH_SHORT);
                 t.setGravity(Gravity.CENTER_HORIZONTAL,0,0);
                 t.show();
+
+                listItems = new NewsList();
+                listItems.setKeyword(query);
+                mAdapter = new NewsAdapter(MainActivity.this,android.R.layout.simple_list_item_2,listItems);
+                actualListView = mPullRefreshListView.getRefreshableView();
+                registerForContextMenu(actualListView);
+                actualListView.setAdapter(mAdapter);
+                new GetMoreData().execute();
+
                 return false;
             }
 
