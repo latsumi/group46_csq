@@ -4,7 +4,6 @@ import android.app.ActionBar;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
-
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.*;
@@ -13,7 +12,10 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.content.Intent;
+import android.widget.SearchView;
 import android.widget.Toast;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.app.Activity;
 import android.graphics.drawable.Drawable;
 
@@ -37,7 +39,7 @@ public class MainActivity extends Activity{
     private PullToRefreshListView mPullRefreshListView;
     private NewsAdapter mAdapter;
     private ListView actualListView;
-
+    private SearchView searchView;
     private ArrayAdapter<String> adapter;
 
     private ListView mLeftDrawer;
@@ -210,6 +212,24 @@ public class MainActivity extends Activity{
         actionBar.setBackgroundDrawable(background);
         //设置是将应用程序图标转变成可点击图标,并添加返回按钮
         actionBar.setDisplayHomeAsUpEnabled(true);
+
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        searchView = (SearchView) searchItem.getActionView();
+        //配置SearchView的属性
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Toast t = Toast.makeText(MainActivity.this, query, Toast.LENGTH_SHORT);
+                t.setGravity(Gravity.CENTER_HORIZONTAL,0,0);
+                t.show();
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
         return super.onCreateOptionsMenu(menu);
     }
 

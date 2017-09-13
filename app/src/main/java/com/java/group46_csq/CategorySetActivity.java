@@ -58,7 +58,7 @@ public class CategorySetActivity extends Activity{
             @Override
             public void onClick(View v) {
                 finish();
-                Toast tst = Toast.makeText(CategorySetActivity.this, "您啥都没干就回来了", Toast.LENGTH_LONG);
+                Toast tst = Toast.makeText(CategorySetActivity.this, "成功返回", Toast.LENGTH_LONG);
                 tst.show();
             }
         });
