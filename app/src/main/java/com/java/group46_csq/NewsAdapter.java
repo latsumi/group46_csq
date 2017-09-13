@@ -59,6 +59,10 @@ public class NewsAdapter extends BaseAdapter {
             text1.setTextColor(Color.parseColor("#666666"));
             text2.setTextColor(Color.parseColor("#666666"));
         }
+        else {
+            text1.setTextColor(Color.parseColor("#123456"));
+            text2.setTextColor(Color.parseColor("#123456"));
+        }
         text1.setText(listItems.getNewsList().get(position).getNewsTitle());
         text2.setText(listItems.getNewsList().get(position).getNewsIntro());
         return view;

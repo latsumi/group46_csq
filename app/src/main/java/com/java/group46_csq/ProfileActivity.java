@@ -155,6 +155,7 @@ public class ProfileActivity extends Activity{
             if (!n.getNewsContent().equals("") && !hasBeenRead) {
                 try {
                     fos = openFileOutput(filename, Context.MODE_APPEND);
+                    n.isRead = true;
                     FileService.saveNews(fos, n);
                     fos.close();
                 } catch (Exception e) {

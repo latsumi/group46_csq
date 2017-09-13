@@ -199,23 +199,6 @@ public class MainActivity extends Activity{
         mPullRefreshListView.onRefreshComplete();
     }
 
-    private class GetNewsList extends AsyncTask<String, Void, NewsList> {
-        @Override
-        protected void onPreExecute() {}
-
-        @Override
-        protected NewsList doInBackground(String... params) {
-            listItems.refresh();
-
-            return listItems;
-        }
-
-        @Override
-        protected void onPostExecute(NewsList listItems) {
-
-        }
-    }
-
     private class GetMoreData extends AsyncTask<Void, Void, NewsList> {
         @Override
         protected void onPreExecute() {}

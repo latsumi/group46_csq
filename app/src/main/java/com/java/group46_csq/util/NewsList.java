@@ -14,11 +14,14 @@ import android.util.Log;
 
 import com.java.group46_csq.ProfileActivity;
 
+import java.io.BufferedReader;
 import java.io.EOFException;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
+import java.util.TreeSet;
 
 public class NewsList {
     private final static int pageSize = 20;
@@ -32,11 +35,14 @@ public class NewsList {
 
     private boolean isLoadFromLocal = false;
 
+    private TreeSet<String> localNewsID;
+
     public NewsList() {
         this.news_list = new ArrayList<News>();
         this.pageNo = 0;
         this.category = 0;
         this.keyword = null;
+        localNewsID = new TreeSet<String>();
     }
 
     public NewsList(int category) {
@@ -44,6 +50,7 @@ public class NewsList {
         this.pageNo = 0;
         this.category = category;
         this.keyword = null;
+        localNewsID = new TreeSet<String>();
     }
 
     public NewsList(String keyword) {
@@ -51,6 +58,7 @@ public class NewsList {
         this.pageNo = 0;
         this.category = 0;
         this.keyword = keyword;
+        localNewsID = new TreeSet<String>();
     }
 
     public NewsList(String keyword, int category) {
@@ -58,6 +66,7 @@ public class NewsList {
         this.pageNo = 0;
         this.category = category;
         this.keyword = keyword;
+        localNewsID = new TreeSet<String>();
     }
 
     public void setKeyword(String keyword) {
@@ -66,6 +75,26 @@ public class NewsList {
 
     public void setCategory(int code) {
         this.category = code;
+    }
+
+    public void loadIDFromLocal(FileInputStream fis) {
+        isLoadFromLocal = true;
+        try {
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            while (true) {
+                News news1 = new News();
+                Log.d("--point--", "1");
+                news1 = (News) ois.readObject();
+                Log.d("--point--", "2");
+                byte[] buf = new byte[4];
+                fis.read(buf);
+                Log.d("--point--", "3");
+                this.localNewsID.add(news1.getNewsID());
+                Log.d("---Counts---", "Counts the number of news");
+            }
+        } catch (Exception e) {
+            Log.d("----Exception-----", "exception in function loadIDFromLocal");
+        }
     }
 
     public void loadFromLocal(FileInputStream fis) {
