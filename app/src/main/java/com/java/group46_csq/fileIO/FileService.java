@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import android.content.Context;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -14,14 +15,14 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import com.java.group46_csq.util.News;
+
+
 /**
  * Created by csq on 17/9/12.
  */
 
 public class FileService {
-
     public FileService() {
-
     }
 
 
@@ -58,5 +59,27 @@ public class FileService {
             return res;
         }
     }
+
+    public static String readFile(Context context,String fileName) throws IOException {
+        String res = "";
+        FileInputStream fis = context.openFileInput(fileName);
+        byte[] buffer = new byte[fis.available()];
+        fis.read(buffer);
+        res = new String(buffer, "UTF-8");
+        fis.close();
+        return res;
+    }
+
+    public static void writeFile(Context context, String fileName, String content){
+            try {
+
+                FileOutputStream fos = context.openFileOutput(fileName, Context.MODE_PRIVATE);
+                fos.write(content.getBytes());
+                fos.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
 
 }

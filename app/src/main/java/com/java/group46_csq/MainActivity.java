@@ -20,7 +20,7 @@ import android.graphics.drawable.Drawable;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.java.group46_csq.util.NewsList;
-
+import com.java.group46_csq.fileIO.FileService;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnLastItemVisibleListener;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 
@@ -36,7 +36,7 @@ public class MainActivity extends Activity{
     private ListView mLeftDrawer;
 
 
-    String[] menu_array = {"新闻分类","本地新闻","夜间模式"," 设 置 "};
+    String[] menu_array = {"  新闻分类","  本地新闻","  夜间模式","   设 置 "};
 
     private String keyword;
     private int category;
@@ -50,11 +50,10 @@ public class MainActivity extends Activity{
         //Intent i = getIntent();
         //keyword = i.getStringExtra("keyword");
         //category = Integer.parseInt(i.getStringExtra("category"));
-
+        FileService.writeFile(MainActivity.this, "categorySet.txt","111111110000");
         listItems = new NewsList(keyword, category);
         mAdapter = new NewsAdapter(this,android.R.layout.simple_list_item_2,listItems);
         mPullRefreshListView = (PullToRefreshListView) findViewById(R.id.pull_refresh_list);
-
         /*
             edit by csq
             left drawer
@@ -69,7 +68,7 @@ public class MainActivity extends Activity{
                 switch (position) {
                     case 0:
                         Intent intent=
-                                new Intent(MainActivity.this,TestActivity.class);
+                                new Intent(MainActivity.this,CategorySetActivity.class);
                         startActivity(intent);
                         break;
                     case 1:
@@ -125,7 +124,7 @@ public class MainActivity extends Activity{
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
 
-                Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+                Intent intent = new Intent(MainActivity.this, NewsDetailActivity.class);
                 String news_ID = listItems.getNewsList().get(position-1).getNewsID();
 
                 //add the statement that the news has benn read

@@ -27,7 +27,7 @@ import com.java.group46_csq.util.News;
  * Created by csq on 17/9/9.
  */
 
-public class ProfileActivity extends Activity{
+public class NewsDetailActivity extends Activity{
     private TextView title;
     private TextView textsrc;
     private TextView maintext;
@@ -46,7 +46,7 @@ public class ProfileActivity extends Activity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.relative_example);
+        setContentView(R.layout.activity_newsdetail);
 
         Intent i = getIntent();
         String news_ID = i.getStringExtra("news_ID");
@@ -88,7 +88,7 @@ public class ProfileActivity extends Activity{
                     //设置朗读语言
                     int supported=mTextToSpeech.setLanguage(Locale.US);
                     if ((supported!=TextToSpeech.LANG_AVAILABLE)&&(supported!=TextToSpeech.LANG_COUNTRY_AVAILABLE)) {
-                        Toast.makeText(ProfileActivity.this, "不支持当前语言！", 1).show();
+                        Toast.makeText(NewsDetailActivity.this, "不支持当前语言！", 1).show();
                     }
                 }
 
