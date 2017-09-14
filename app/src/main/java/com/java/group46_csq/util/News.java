@@ -101,7 +101,7 @@ public class News implements Serializable, Comparable {
         this.news_Intro = ParseJson.parseNewsIntro(json_detail);
         this.news_Title = ParseJson.parseNewsTitle(json_detail);
         String pictures = ParseJson.parseNewsPictures(json_detail);
-        String temp[] = pictures.split("\\s+");
+        String temp[] = pictures.split("[;\\s]+");
         this.news_Pictures = temp;
     }
 
