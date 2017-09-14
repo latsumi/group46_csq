@@ -4,26 +4,24 @@
     <item
         android:id="@+id/action_share"
         android:actionProviderClass="android.widget.ShareActionProvider"
-        android:showAsAction="always"
+        android:showAsAction="ifRoom"
         android:title="分享" />
 
     <item
         android:id="@+id/action_read"
         android:icon="@drawable/ic_action_read"
-        android:showAsAction="always"
+        android:showAsAction="never"
         android:title="语音播报"/>
 
 
     <item
         android:id="@+id/action_favo"
         android:icon="@drawable/ic_action_favo"
-        android:orderInCategory="100"
         android:title="添加收藏"
         android:showAsAction="never"/>
     <item
         android:id="@+id/action_unfavo"
         android:icon="@drawable/ic_action_unfavo"
-        android:orderInCategory="100"
         android:title="取消收藏"
         android:showAsAction="never"/>
 

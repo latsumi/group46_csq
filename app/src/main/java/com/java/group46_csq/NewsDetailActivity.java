@@ -3,6 +3,7 @@ package com.java.group46_csq;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
+import java.lang.reflect.Method;
 import java.util.Locale;
 import java.util.TreeSet;
 
@@ -19,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.ShareActionProvider;
 import android.widget.TextView;
@@ -41,9 +43,6 @@ public class NewsDetailActivity extends Activity{
     private TextView maintext;
     private ImageView news_image;
 
-    private Button readButton;
-    private Button addLike;
-    private Button delLike;
 
     private TextToSpeech mTextToSpeech = null;
 
@@ -169,6 +168,22 @@ public class NewsDetailActivity extends Activity{
         }
     }
     @Override
+    public boolean onMenuOpened(int featureId, Menu menu) {
+        if (featureId == Window.FEATURE_ACTION_BAR && menu != null) {
+            if (menu.getClass().getSimpleName().equals("MenuBuilder")) {
+                try {
+                    Method m = menu.getClass().getDeclaredMethod("setOptionalIconsVisible", Boolean.TYPE);
+                    m.setAccessible(true);
+                    m.invoke(menu, true);
+                } catch (Exception e) {
+                }
+            }
+        }
+        return super.onMenuOpened(featureId, menu);
+    }
+
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
 
@@ -276,7 +291,7 @@ public class NewsDetailActivity extends Activity{
         @Override
         protected void onPostExecute(Bitmap res) {
             if (res == null) {
-                news_image.setImageResource(R.drawable.circlel_header);
+                news_image.setImageResource(R.drawable.news_not_found);
             }
             else {
                 news_image.setImageBitmap(res);
