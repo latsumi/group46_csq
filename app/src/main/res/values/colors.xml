@@ -6,5 +6,10 @@
     <color name="colorAccent">#FF4081</color>
     <color name="top_title_bar_normal_backgrond_color">#e0C73E3A</color>
     <color name="top_title_bar_button_press_background_color">#D83C38</color>
-    <color name="text_background_color">#FFFAFA</color>
+    <color name="background_color">#FFFAFA</color>
+    <color name="text_color">#191919</color>
+    <color name="text_color_isread">#666666</color>
+    <color name="text_color_night">#999999</color>
+    <color name="background_color_night">#191919</color>
+
 </resources>

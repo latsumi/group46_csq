@@ -22,7 +22,7 @@ public class NewsAdapter extends BaseAdapter {
     private final Context context;
     private final int layout;
     private NewsList listItems;
-
+    public boolean isNightMode;
     public NewsAdapter(Context context, int layout, NewsList listItems) {
         this.context = context;
         this.layout = layout;
@@ -59,13 +59,25 @@ public class NewsAdapter extends BaseAdapter {
             text1.setTextColor(Color.parseColor("#666666"));
             text2.setTextColor(Color.parseColor("#666666"));
         }
+        // Edited by csq on 17/9/14
         else {
-            text1.setTextColor(Color.parseColor("#123456"));
-            text2.setTextColor(Color.parseColor("#123456"));
+            if (isNightMode) {
+                text1.setTextColor(Color.parseColor("#999999"));
+                text2.setTextColor(Color.parseColor("#999999"));
+            } else {
+                text1.setTextColor(Color.parseColor("#191919"));
+                text2.setTextColor(Color.parseColor("#191919"));
+            }
         }
+
+
         text1.setText(listItems.getNewsList().get(position).getNewsTitle());
         text2.setText(listItems.getNewsList().get(position).getNewsIntro());
         return view;
 
+    }
+
+    public void setNightMode(boolean isNight){
+        isNightMode = isNight;
     }
 }

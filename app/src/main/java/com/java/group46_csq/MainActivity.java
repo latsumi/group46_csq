@@ -2,10 +2,10 @@ package com.java.group46_csq;
 
 import android.app.ActionBar;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
-import android.support.v7.app.AppCompatActivity;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.*;
@@ -34,6 +34,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.TreeSet;
 
@@ -45,7 +46,7 @@ public class MainActivity extends Activity{
     private ListView actualListView;
     private SearchView searchView;
     private ArrayAdapter<String> adapter;
-
+    private boolean isNightMode = false;
     private ListView mLeftDrawer;
 
     private NewsList[] NewsListArr;
@@ -77,6 +78,7 @@ public class MainActivity extends Activity{
             NewsListArr[i].setCategory(i+1);
         }
         mAdapter = new NewsAdapter(this,android.R.layout.simple_list_item_2,listItems);
+        mAdapter.setNightMode(isNightMode);
         mPullRefreshListView = (PullToRefreshListView) findViewById(R.id.pull_refresh_list);
         /*
             edit by csq
@@ -102,6 +104,7 @@ public class MainActivity extends Activity{
                         isRecommending = false;
                         listItems = new NewsList();
                         mAdapter = new NewsAdapter(MainActivity.this,android.R.layout.simple_list_item_2,listItems);
+                        mAdapter.setNightMode(isNightMode);
                         actualListView = mPullRefreshListView.getRefreshableView();
                         registerForContextMenu(actualListView);
                         actualListView.setAdapter(mAdapter);
@@ -111,6 +114,7 @@ public class MainActivity extends Activity{
                         isRecommending = false;
                         listItems = new NewsList();
                         mAdapter = new NewsAdapter(MainActivity.this,android.R.layout.simple_list_item_2,listItems);
+                        mAdapter.setNightMode(isNightMode);
                         actualListView = mPullRefreshListView.getRefreshableView();
                         registerForContextMenu(actualListView);
                         actualListView.setAdapter(mAdapter);
@@ -120,6 +124,7 @@ public class MainActivity extends Activity{
                         isRecommending = false;
                         listItems = new NewsList();
                         mAdapter = new NewsAdapter(MainActivity.this,android.R.layout.simple_list_item_2,listItems);
+                        mAdapter.setNightMode(isNightMode);
                         actualListView = mPullRefreshListView.getRefreshableView();
                         registerForContextMenu(actualListView);
                         actualListView.setAdapter(mAdapter);
@@ -129,6 +134,7 @@ public class MainActivity extends Activity{
                         isRecommending = true;
                         listItems = new NewsList();
                         mAdapter = new NewsAdapter(MainActivity.this,android.R.layout.simple_list_item_2,listItems);
+                        mAdapter.setNightMode(isNightMode);
                         actualListView = mPullRefreshListView.getRefreshableView();
                         registerForContextMenu(actualListView);
                         actualListView.setAdapter(mAdapter);
@@ -138,6 +144,7 @@ public class MainActivity extends Activity{
                         listItems = new NewsList();
                         listItems.setCategory(getCategoryNumber(position));
                         mAdapter = new NewsAdapter(MainActivity.this,android.R.layout.simple_list_item_2,listItems);
+                        mAdapter.setNightMode(isNightMode);
                         actualListView = mPullRefreshListView.getRefreshableView();
                         registerForContextMenu(actualListView);
                         actualListView.setAdapter(mAdapter);
@@ -194,6 +201,8 @@ public class MainActivity extends Activity{
 
                 Log.d("----tag-put-string----", news_ID);
                 intent.putExtra("news_ID", news_ID);
+                intent.putExtra("isNightMode", isNightMode);
+
                 startActivity(intent);
 
 
@@ -217,6 +226,7 @@ public class MainActivity extends Activity{
 
         actualListView = mPullRefreshListView.getRefreshableView();
 
+        actualListView.setBackgroundColor(Color.parseColor("#FFFAFA"));
         // Need to use the Actual ListView when registering for Context Menu
         registerForContextMenu(actualListView);
 
@@ -231,6 +241,7 @@ public class MainActivity extends Activity{
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_main, menu);
+
         //取得ActionBar
         ActionBar actionBar = getActionBar();
         //设置不显示标题
@@ -238,7 +249,7 @@ public class MainActivity extends Activity{
         //设置使用logo
         actionBar.setDisplayUseLogoEnabled(true);
         //设置logo
-        actionBar.setLogo(R.drawable.news);
+        actionBar.setLogo(R.drawable.ic_news1);
         //设置ActionBar背景
         Drawable background = getResources().getDrawable(R.drawable.top_bar_background);
         actionBar.setBackgroundDrawable(background);
@@ -258,6 +269,7 @@ public class MainActivity extends Activity{
                 listItems = new NewsList();
                 listItems.setKeyword(query);
                 mAdapter = new NewsAdapter(MainActivity.this,android.R.layout.simple_list_item_2,listItems);
+                mAdapter.setNightMode(isNightMode);
                 actualListView = mPullRefreshListView.getRefreshableView();
                 registerForContextMenu(actualListView);
                 actualListView.setAdapter(mAdapter);
@@ -273,7 +285,39 @@ public class MainActivity extends Activity{
         });
         return super.onCreateOptionsMenu(menu);
     }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch (item.getItemId()) {
+            case R.id.night_mode:
+                isNightMode = !isNightMode;
+                mAdapter.setNightMode(isNightMode);
+                mAdapter.notifyDataSetChanged();
+                mPullRefreshListView.onRefreshComplete();
+                if(isNightMode)
+                    actualListView.setBackgroundColor(Color.parseColor("#191919"));
+                else
+                    actualListView.setBackgroundColor(Color.parseColor("#FFFAFA"));
 
+                //recreate();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+    @Override
+    public boolean onMenuOpened(int featureId, Menu menu) {
+        if (featureId == Window.FEATURE_ACTION_BAR && menu != null) {
+            if (menu.getClass().getSimpleName().equals("MenuBuilder")) {
+                try {
+                    Method m = menu.getClass().getDeclaredMethod("setOptionalIconsVisible", Boolean.TYPE);
+                    m.setAccessible(true);
+                    m.invoke(menu, true);
+                } catch (Exception e) {
+                }
+            }
+        }
+        return super.onMenuOpened(featureId, menu);
+    }
     @Override
     public void onResume() {
         super.onResume();

@@ -12,6 +12,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.ShareActionProvider;
 import android.widget.TextView;
 import android.widget.Button;
@@ -42,8 +44,8 @@ public class NewsDetailActivity extends Activity{
     private TextView title;
     private TextView maintext;
     private ImageView news_image;
-
-
+    private ScrollView scrollView;
+    private boolean isNightMode;
     private TextToSpeech mTextToSpeech = null;
 
     private News n;
@@ -61,7 +63,7 @@ public class NewsDetailActivity extends Activity{
 
         Intent i = getIntent();
         String news_ID = i.getStringExtra("news_ID");
-
+        isNightMode = i.getBooleanExtra("isNightMode",false);
         //Log.d("----------tag--------", news_ID);
 
         n = new News(news_ID);
@@ -78,14 +80,27 @@ public class NewsDetailActivity extends Activity{
 
         title = (TextView) findViewById(R.id.title);
         maintext = (TextView) findViewById(R.id.maintext);
-
         news_image = (ImageView) findViewById(R.id.news_image);
-
-
-        likes = new TreeSet<News>();
+        scrollView = (ScrollView) findViewById(R.id.scrollview);
 
         View parent = (View) title.getParent();
-        parent.setBackgroundColor(getResources().getColor(R.color.text_background_color));
+        if(isNightMode)
+        {
+            title.setTextColor(getResources().getColor(R.color.text_color_night));
+            maintext.setTextColor(getResources().getColor(R.color.text_color_night));
+            parent.setBackgroundColor(Color.parseColor("#191919"));
+            news_image.setImageResource(R.drawable.loading_night);
+        }
+        else
+        {
+            title.setTextColor(getResources().getColor(R.color.text_color));
+            maintext.setTextColor(getResources().getColor(R.color.text_color));
+            parent.setBackgroundColor(Color.parseColor("#FFFAFA"));
+            news_image.setImageResource(R.drawable.loading);
+        }
+        likes = new TreeSet<News>();
+
+
         title.setTextAppearance(this,android.R.style.TextAppearance_DeviceDefault_Large);
 
 
@@ -125,7 +140,7 @@ public class NewsDetailActivity extends Activity{
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayShowTitleEnabled(false);
         actionBar.setDisplayUseLogoEnabled(true);
-        actionBar.setLogo(R.drawable.news);
+        actionBar.setLogo(R.drawable.ic_news1);
         Drawable background = getResources().getDrawable(R.drawable.top_bar_background);
         actionBar.setBackgroundDrawable(background);
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -150,9 +165,10 @@ public class NewsDetailActivity extends Activity{
     public boolean onOptionsItemSelected(MenuItem item){
         switch (item.getItemId()) {
             case android.R.id.home:
-                Intent intent = new Intent(this, MainActivity.class);
+                /*Intent intent = new Intent(this, MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
+                startActivity(intent);*/
+                finish();
                 return true;
             case R.id.action_read:
                 mTextToSpeech.speak(maintext.getText().toString(), TextToSpeech.QUEUE_FLUSH, null);
@@ -254,7 +270,16 @@ public class NewsDetailActivity extends Activity{
         protected void onPostExecute(String res) {
             title.setText(n.getNewsTitle());
             maintext.setText(n.getNewsContent());
-
+            if(isNightMode)
+            {
+                title.setTextColor(getResources().getColor(R.color.text_color_night));
+                maintext.setTextColor(getResources().getColor(R.color.text_color_night));
+            }
+            else
+            {
+                title.setTextColor(getResources().getColor(R.color.text_color));
+                maintext.setTextColor(getResources().getColor(R.color.text_color));
+            }
             //news_image.setImageResource(R.mipmap.loading);
 
         }

@@ -10,6 +10,12 @@
         android:actionViewClass="android.widget.SearchView"
         android:showAsAction="ifRoom|collapseActionView"
         />
+    <item
+        android:id="@+id/night_mode"
+        android:icon="@drawable/ic_nightmode"
+        android:title="日夜模式切换"
+        android:showAsAction="ifRoom"
+        />
 
 
 

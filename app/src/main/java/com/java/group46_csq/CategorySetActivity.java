@@ -76,10 +76,11 @@ public class CategorySetActivity extends Activity{
         ActionBar actionBar = getActionBar();
         actionBar.setTitle(" 新闻分类设置");
         actionBar.setDisplayUseLogoEnabled(true);
-        actionBar.setLogo(R.drawable.news);
+        actionBar.setLogo(R.drawable.ic_news1);
         Drawable background = getResources().getDrawable(R.drawable.top_bar_background);
         actionBar.setBackgroundDrawable(background);
         actionBar.setHomeButtonEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
 
 
@@ -90,9 +91,10 @@ public class CategorySetActivity extends Activity{
     public boolean onOptionsItemSelected(MenuItem item){
         switch (item.getItemId()) {
             case android.R.id.home:
-                Intent intent = new Intent(this, MainActivity.class);
+                /*Intent intent = new Intent(this, MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
+                startActivity(intent);*/
+                finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
