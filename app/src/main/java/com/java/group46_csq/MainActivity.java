@@ -1,6 +1,7 @@
 package com.java.group46_csq;
 
 import android.app.ActionBar;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -22,6 +23,7 @@ import android.graphics.drawable.Drawable;
 
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.java.group46_csq.util.GetRandCat;
 import com.java.group46_csq.util.News;
 import com.java.group46_csq.util.NewsList;
 import com.java.group46_csq.fileIO.FileService;
@@ -29,6 +31,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.OnLastItemVisibleLis
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.Iterator;
@@ -45,12 +48,17 @@ public class MainActivity extends Activity{
 
     private ListView mLeftDrawer;
 
+    private NewsList[] NewsListArr;
+
+
     String categoryStr;
     int[] categoryArr;
     String[] menu_array;
 
-    private String keyword;
-    private int category;
+    private int[] readCategory;
+    private int[] pointers = {0,0,0,0,0,0,0,0,0,0,0,0};
+
+    private boolean isRecommending = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +70,12 @@ public class MainActivity extends Activity{
         //keyword = i.getStringExtra("keyword");
         //category = Integer.parseInt(i.getStringExtra("category"));
         //FileService.writeFile(MainActivity.this, "categorySet.txt","111111110000");
-        listItems = new NewsList(keyword, category);
+        listItems = new NewsList();
+        NewsListArr = new NewsList[12];
+        for (int i = 0; i < 12; i++) {
+            NewsListArr[i] = new NewsList();
+            NewsListArr[i].setCategory(i+1);
+        }
         mAdapter = new NewsAdapter(this,android.R.layout.simple_list_item_2,listItems);
         mPullRefreshListView = (PullToRefreshListView) findViewById(R.id.pull_refresh_list);
         /*
@@ -73,16 +86,20 @@ public class MainActivity extends Activity{
 
         new ReadCategory().execute();
 
+        new ReadReadData().execute();
+
         mLeftDrawer.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 switch (position) {
                     case 0:
+                        isRecommending = false;
                         Intent intent=
                                 new Intent(MainActivity.this,CategorySetActivity.class);
                         startActivity(intent);
                         break;
                     case 1:
+                        isRecommending = false;
                         listItems = new NewsList();
                         mAdapter = new NewsAdapter(MainActivity.this,android.R.layout.simple_list_item_2,listItems);
                         actualListView = mPullRefreshListView.getRefreshableView();
@@ -91,6 +108,7 @@ public class MainActivity extends Activity{
                         new LoadDataFromLocal().execute("localnews");
                         break;
                     case 2:
+                        isRecommending = false;
                         listItems = new NewsList();
                         mAdapter = new NewsAdapter(MainActivity.this,android.R.layout.simple_list_item_2,listItems);
                         actualListView = mPullRefreshListView.getRefreshableView();
@@ -99,6 +117,7 @@ public class MainActivity extends Activity{
                         new LoadLikeDataFromLocal().execute("likes");
                         break;
                     case 3:
+                        isRecommending = false;
                         listItems = new NewsList();
                         mAdapter = new NewsAdapter(MainActivity.this,android.R.layout.simple_list_item_2,listItems);
                         actualListView = mPullRefreshListView.getRefreshableView();
@@ -107,13 +126,13 @@ public class MainActivity extends Activity{
                         new GetMoreData().execute();
                         break;
                     case 4:
+                        isRecommending = true;
                         listItems = new NewsList();
-                        listItems.setCategory(1);
                         mAdapter = new NewsAdapter(MainActivity.this,android.R.layout.simple_list_item_2,listItems);
                         actualListView = mPullRefreshListView.getRefreshableView();
                         registerForContextMenu(actualListView);
                         actualListView.setAdapter(mAdapter);
-                        new GetMoreData().execute();
+                        new GetMoreRecommend().execute();
                         break;
                     default:
                         listItems = new NewsList();
@@ -143,7 +162,12 @@ public class MainActivity extends Activity{
                 refreshView.getLoadingLayoutProxy().setLastUpdatedLabel(label);
 
                 // Do work to refresh the list here.
-                new GetMoreData().execute();
+                if (isRecommending) {
+                    new GetMoreRecommend().execute();
+                }
+                else {
+                    new GetMoreData().execute();
+                }
             }
         });
 
@@ -158,7 +182,14 @@ public class MainActivity extends Activity{
                 String news_ID = listItems.getNewsList().get(position-1).getNewsID();
 
                 //add the statement that the news has benn read
-                listItems.getNewsList().get(position-1).isRead = true;
+                News e = listItems.getNewsList().get(position-1);
+                e.isRead = true;
+                if (e.getNewsCategory() != 0) {
+                    Log.d("---Read Data---", "Read category: " + e.getNewsCategory());
+                    readCategory[e.getNewsCategory()-1]++;
+                }
+
+                new WriteReadData().execute();
 
 
                 Log.d("----tag-put-string----", news_ID);
@@ -276,6 +307,33 @@ public class MainActivity extends Activity{
         }
     }
 
+    private class GetMoreRecommend extends AsyncTask<Void, Void, NewsList> {
+        @Override
+        protected void onPreExecute() {}
+
+        @Override
+        protected NewsList doInBackground(Void...params) {
+            for (int i = 0; i < 20; i++) {
+                int t = GetRandCat.getRandCat(readCategory);
+                if (t != 0) {
+                    t--;
+                    if (pointers[t] > NewsListArr[t].length()-5) {
+                        NewsListArr[t].refresh();
+                    }
+                    listItems.addNews(NewsListArr[t].getNews(pointers[t]));
+                    pointers[t]++;
+                }
+            }
+            return listItems;
+        }
+
+        @Override
+        protected void onPostExecute(NewsList listItems) {
+            mAdapter.notifyDataSetChanged();
+            mPullRefreshListView.onRefreshComplete();
+        }
+    }
+
     private class LoadDataFromLocal extends AsyncTask<String, Void, String> {
         FileInputStream fis;
         @Override
@@ -380,6 +438,50 @@ public class MainActivity extends Activity{
             mLeftDrawer.setAdapter(adapter);
             adapter.notifyDataSetChanged();
             //mLeftDrawer.NotifyDataSetChanged();
+        }
+    }
+
+    private class WriteReadData extends AsyncTask<Void, Void, String> {
+        @Override
+        protected void onPreExecute() {}
+
+        @Override
+        protected String doInBackground(Void...params) {
+            try {
+                FileOutputStream fos = openFileOutput("read", Context.MODE_PRIVATE);
+                FileService.writeIntFile(fos, readCategory);
+                fos.close();
+            }
+            catch (IOException e) {
+                Log.d("---Exception---", "IO Exception at write Read Data");
+            }
+            return "write";
+        }
+    }
+
+    private class ReadReadData extends AsyncTask<Void,Void, String> {
+        @Override
+        protected void onPreExecute() {}
+
+        @Override
+        protected String doInBackground(Void...params) {
+            try {
+                FileInputStream fis = openFileInput("read");
+                readCategory = FileService.readIntFile(fis);
+                for (int i = 0; i < 12; i++) {
+                    Log.d("---Read Data---", " " + readCategory[i]);
+                }
+                fis.close();
+            }
+            catch (IOException e) {
+                Log.d("---Exception---", "IO Exception in ReadReadDate");
+                Log.d("---Set the Arr---","...");
+                readCategory = new int[12];
+                for (int i = 0; i < 12; i++) {
+                    readCategory[i] = 5;
+                }
+            }
+            return "Read";
         }
     }
 

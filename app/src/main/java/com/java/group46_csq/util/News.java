@@ -20,6 +20,7 @@ public class News implements Serializable, Comparable {
     private String newsClassTag;
     private String news_Content;
     private String[] news_Pictures;
+    private int news_Category;
 
     public boolean isRead = false;
 
@@ -30,6 +31,7 @@ public class News implements Serializable, Comparable {
         this.news_Intro = "";
         this.news_Content = "";
         this.news_Pictures = new String[0];
+        this.news_Category = 0;
     }
 
     public News(String ID) {
@@ -39,6 +41,7 @@ public class News implements Serializable, Comparable {
         this.news_Intro = "";
         this.news_Content = "";
         this.news_Pictures = new String[0];
+        this.news_Category = 0;
     }
 
     public void setNewsID(String ID) {
@@ -100,6 +103,14 @@ public class News implements Serializable, Comparable {
         String pictures = ParseJson.parseNewsPictures(json_detail);
         String temp[] = pictures.split("\\s+");
         this.news_Pictures = temp;
+    }
+
+    public void setNewsCategory(int a) {
+        this.news_Category = a;
+    }
+
+    public int getNewsCategory() {
+        return this.news_Category;
     }
 
     //edited by csq on 17/9/12

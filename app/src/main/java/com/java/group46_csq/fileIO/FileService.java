@@ -2,6 +2,8 @@ package com.java.group46_csq.fileIO;
 
 import android.util.Log;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,8 +13,12 @@ import android.content.Context;
 
 import java.io.EOFException;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.TreeSet;
 
@@ -76,6 +82,43 @@ public class FileService {
         } finally {
             osi.close();
             return res;
+        }
+    }
+
+    //edit by zhy
+    public static int[] readIntFile(FileInputStream fis) {
+        try {
+            BufferedReader br = new BufferedReader(new InputStreamReader(fis));
+            ArrayList<Integer> arr = new ArrayList<Integer>();
+            String line;
+            while ((line = br.readLine()) != null) {
+                arr.add(new Integer(Integer.parseInt(line)));
+                Log.d("---Print Values---", line);
+            }
+            int[] res = new int[arr.size()];
+            for (int i = 0; i < arr.size(); i++) {
+                res[i] = arr.get(i).intValue();
+            }
+
+            return res;
+        }
+        catch (Exception e) {
+            Log.d("---Exception---", "Exception happens while reading the integers");
+            return new int[0];
+        }
+    }
+
+    //edit by zhy
+    public static void writeIntFile(FileOutputStream fos, int[] arr) {
+        try {
+            PrintWriter pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(fos)));
+            for (int i = 0; i < arr.length; i++) {
+                pw.println(arr[i]);
+            }
+            pw.close();
+        }
+        catch (Exception e) {
+            Log.d("---Exception---", "Exception happens while writing the integers");
         }
     }
 
